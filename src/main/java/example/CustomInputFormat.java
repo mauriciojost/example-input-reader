@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
 
 public class CustomInputFormat extends FileInputFormat<LongWritable, Text> {
 
+    // https://hadoopi.wordpress.com/2013/05/27/understand-recordreader-inputsplit/
     @Override
     public RecordReader<LongWritable, Text>
     createRecordReader(InputSplit split, TaskAttemptContext context) {
