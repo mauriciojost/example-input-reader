@@ -18,13 +18,12 @@ public class CustomInputFormat extends FileInputFormat<LongWritable, Text> {
     @Override
     public RecordReader<LongWritable, Text>
     createRecordReader(InputSplit split, TaskAttemptContext context) {
-        return new LineRecordReader();
+        return new CustomRecordReader();
     }
 
     @Override
     protected boolean isSplitable(JobContext context, Path file) {
-        CompressionCodec codec = new CompressionCodecFactory(context.getConfiguration()).getCodec(file);
-        return codec == null;
+        return true;
     }
 
 }
