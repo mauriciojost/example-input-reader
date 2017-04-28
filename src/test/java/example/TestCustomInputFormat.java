@@ -23,12 +23,9 @@ public class TestCustomInputFormat {
         FileInputFormat<?, ?> fileInputFormat = new CustomInputFormat();
         List<InputSplit> splits = fileInputFormat.getSplits(job);
         Assert.assertEquals("Input splits are not correct", 3, splits.size());
-        Assert.assertEquals("test:/a1/a2/file2", ((FileSplit) splits.get(0))
-                .getPath().toString());
-        Assert.assertEquals("test:/a1/a2/file3", ((FileSplit) splits.get(1))
-                .getPath().toString());
-        Assert.assertEquals("test:/a1/file1", ((FileSplit) splits.get(2)).getPath()
-                .toString());
+        Assert.assertEquals("test:/a1/a2/file2", ((FileSplit) splits.get(0)).getPath().toString());
+        Assert.assertEquals("test:/a1/a2/file3", ((FileSplit) splits.get(1)).getPath().toString());
+        Assert.assertEquals("test:/a1/file1", ((FileSplit) splits.get(2)).getPath().toString());
 
         // Using the deprecated configuration
         conf = getConfiguration();
@@ -36,12 +33,9 @@ public class TestCustomInputFormat {
         job = Job.getInstance(conf);
         splits = fileInputFormat.getSplits(job);
         Assert.assertEquals("Input splits are not correct", 3, splits.size());
-        Assert.assertEquals("test:/a1/a2/file2", ((FileSplit) splits.get(0))
-                .getPath().toString());
-        Assert.assertEquals("test:/a1/a2/file3", ((FileSplit) splits.get(1))
-                .getPath().toString());
-        Assert.assertEquals("test:/a1/file1", ((FileSplit) splits.get(2)).getPath()
-                .toString());
+        Assert.assertEquals("test:/a1/a2/file2", ((FileSplit) splits.get(0)).getPath().toString());
+        Assert.assertEquals("test:/a1/a2/file3", ((FileSplit) splits.get(1)).getPath().toString());
+        Assert.assertEquals("test:/a1/file1", ((FileSplit) splits.get(2)).getPath().toString());
     }
 
     @Test
@@ -51,10 +45,8 @@ public class TestCustomInputFormat {
         FileInputFormat<?, ?> fileInputFormat = new CustomInputFormat();
         List<InputSplit> splits = fileInputFormat.getSplits(job);
         Assert.assertEquals("Input splits are not correct", 2, splits.size());
-        Assert.assertEquals("test:/a1/a2", ((FileSplit) splits.get(0)).getPath()
-                .toString());
-        Assert.assertEquals("test:/a1/file1", ((FileSplit) splits.get(1)).getPath()
-                .toString());
+        Assert.assertEquals("test:/a1/a2", ((FileSplit) splits.get(0)).getPath().toString());
+        Assert.assertEquals("test:/a1/file1", ((FileSplit) splits.get(1)).getPath().toString());
     }
 
     @Test
@@ -62,16 +54,13 @@ public class TestCustomInputFormat {
         Configuration conf = getConfiguration();
         conf.setBoolean("fs.test.impl.disable.cache", false);
         conf.set(FileInputFormat.INPUT_DIR, "test:///a1/a2");
-        MockFileSystem mockFs =
-                (MockFileSystem) new Path("test:///").getFileSystem(conf);
-        Assert.assertEquals("listLocatedStatus already called",
-                0, mockFs.numListLocatedStatusCalls);
+        MockFileSystem mockFs = (MockFileSystem) new Path("test:///").getFileSystem(conf);
+        Assert.assertEquals("listLocatedStatus already called", 0, mockFs.numListLocatedStatusCalls);
         Job job = Job.getInstance(conf);
         FileInputFormat<?, ?> fileInputFormat = new CustomInputFormat();
         List<InputSplit> splits = fileInputFormat.getSplits(job);
         Assert.assertEquals("Input splits are not correct", 2, splits.size());
-        Assert.assertEquals("listLocatedStatuss calls",
-                1, mockFs.numListLocatedStatusCalls);
+        Assert.assertEquals("listLocatedStatuss calls", 1, mockFs.numListLocatedStatusCalls);
     }
 
     private Configuration getConfiguration() {
@@ -86,46 +75,38 @@ public class TestCustomInputFormat {
         int numListLocatedStatusCalls = 0;
 
         @Override
-        public FileStatus[] listStatus(Path f) throws FileNotFoundException,
-                IOException {
+        public FileStatus[] listStatus(Path f) throws FileNotFoundException, IOException {
             if (f.toString().equals("test:/a1")) {
                 return new FileStatus[]{
                         new FileStatus(0, true, 1, 150, 150, new Path("test:/a1/a2")),
                         new FileStatus(10, false, 1, 150, 150, new Path("test:/a1/file1"))};
             } else if (f.toString().equals("test:/a1/a2")) {
                 return new FileStatus[]{
-                        new FileStatus(10, false, 1, 150, 150,
-                                new Path("test:/a1/a2/file2")),
-                        new FileStatus(10, false, 1, 151, 150,
-                                new Path("test:/a1/a2/file3"))};
+                        new FileStatus(10, false, 1, 150, 150, new Path("test:/a1/a2/file2")),
+                        new FileStatus(10, false, 1, 151, 150, new Path("test:/a1/a2/file3"))};
             }
             return new FileStatus[0];
         }
 
         @Override
-        public FileStatus[] globStatus(Path pathPattern, PathFilter filter)
-                throws IOException {
-            return new FileStatus[]{new FileStatus(10, true, 1, 150, 150,
-                    pathPattern)};
+        public FileStatus[] globStatus(Path pathPattern, PathFilter filter) throws IOException {
+            return new FileStatus[]{new FileStatus(10, true, 1, 150, 150, pathPattern)};
         }
 
         @Override
-        public FileStatus[] listStatus(Path f, PathFilter filter)
-                throws FileNotFoundException, IOException {
+        public FileStatus[] listStatus(Path f, PathFilter filter) throws FileNotFoundException, IOException {
             return this.listStatus(f);
         }
 
         @Override
-        public BlockLocation[] getFileBlockLocations(Path p, long start, long len)
-                throws IOException {
+        public BlockLocation[] getFileBlockLocations(Path p, long start, long len) throws IOException {
             return new BlockLocation[]{
                     new BlockLocation(new String[]{"localhost:50010"},
                             new String[]{"localhost"}, 0, len)};
         }
 
         @Override
-        protected RemoteIterator<LocatedFileStatus> listLocatedStatus(Path f,
-                                                                      PathFilter filter) throws FileNotFoundException, IOException {
+        protected RemoteIterator<LocatedFileStatus> listLocatedStatus(Path f, PathFilter filter) throws FileNotFoundException, IOException {
             ++numListLocatedStatusCalls;
             return super.listLocatedStatus(f, filter);
         }
