@@ -43,15 +43,9 @@ import org.apache.hadoop.util.LineReader;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
-/**
- * Treats keys as offset in file and value as line. 
- */
-@InterfaceAudience.LimitedPrivate({"MapReduce", "Pig"})
-@InterfaceStability.Evolving
 public class LineRecordReader extends RecordReader<LongWritable, Text> {
   private static final Log LOG = LogFactory.getLog(LineRecordReader.class);
-  public static final String MAX_LINE_LENGTH = 
-    "mapreduce.input.linerecordreader.line.maxlength";
+  public static final String MAX_LINE_LENGTH = "mapreduce.input.linerecordreader.line.maxlength";
 
   private long start;
   private long pos;
@@ -73,8 +67,7 @@ public class LineRecordReader extends RecordReader<LongWritable, Text> {
     this.recordDelimiterBytes = recordDelimiter;
   }
 
-  public void initialize(InputSplit genericSplit,
-                         TaskAttemptContext context) throws IOException {
+  public void initialize(InputSplit genericSplit, TaskAttemptContext context) throws IOException {
     FileSplit split = (FileSplit) genericSplit;
     Configuration job = context.getConfiguration();
     this.maxLineLength = job.getInt(MAX_LINE_LENGTH, Integer.MAX_VALUE);
@@ -135,9 +128,7 @@ public class LineRecordReader extends RecordReader<LongWritable, Text> {
   
 
   private int maxBytesToConsume(long pos) {
-    return isCompressedInput
-      ? Integer.MAX_VALUE
-      : (int) Math.min(Integer.MAX_VALUE, end - pos);
+    return isCompressedInput ? Integer.MAX_VALUE : (int) Math.min(Integer.MAX_VALUE, end - pos);
   }
 
   private long getFilePosition() throws IOException {
