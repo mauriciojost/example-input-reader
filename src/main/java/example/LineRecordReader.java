@@ -1,27 +1,7 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package example;
 
 import java.io.IOException;
 
-import org.apache.hadoop.classification.InterfaceAudience;
-import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -53,7 +33,6 @@ public class LineRecordReader extends RecordReader<LongWritable, Text> {
     private LineReader in;
     private FSDataInputStream fileIn;
     private Seekable filePosition;
-    private int maxLineLength;
     private LongWritable key;
     private Text value;
     private boolean isCompressedInput;
@@ -150,9 +129,9 @@ public class LineRecordReader extends RecordReader<LongWritable, Text> {
         // We always read one extra line, which lies outside the upper
         // split limit i.e. (end - 1)
         while (getFilePosition() <= end) {
-            newSize = in.readLine(value, maxLineLength, Math.max(maxBytesToConsume(pos), maxLineLength));
+            newSize = in.readLine(value, MAX_LINE_LENGTH, Math.max(maxBytesToConsume(pos), MAX_LINE_LENGTH));
             pos += newSize;
-            if (newSize < maxLineLength) {
+            if (newSize < MAX_LINE_LENGTH) {
                 break;
             }
 
