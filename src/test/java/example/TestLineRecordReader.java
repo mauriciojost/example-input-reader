@@ -43,7 +43,7 @@ import java.util.Set;
 import static org.junit.Assert.*;
 
 public class TestLineRecordReader {
-    private static Path workDir = new Path(new Path(System.getProperty( "test.build.data", "target"), "data"), "TestTextInputFormat");
+    private static Path workDir = new Path(new Path(System.getProperty("test.build.data", "target"), "data"), "TestTextInputFormat");
     private static Path inputDir = new Path(workDir, "input");
 
     private void testSplitRecords(String testFileName, long firstSplitLength) throws IOException {
@@ -57,7 +57,7 @@ public class TestLineRecordReader {
     }
 
     private void testSplitRecordsForFile(Configuration conf, long firstSplitLength, long testFileSize, Path testFilePath) throws IOException {
-        conf.setInt(org.apache.hadoop.mapreduce.lib.input. LineRecordReader.MAX_LINE_LENGTH, Integer.MAX_VALUE);
+        conf.setInt(org.apache.hadoop.mapreduce.lib.input.LineRecordReader.MAX_LINE_LENGTH, Integer.MAX_VALUE);
         assertTrue("unexpected test data at " + testFilePath, testFileSize > firstSplitLength);
 
         String delimiter = conf.get("textinputformat.record.delimiter");
@@ -204,7 +204,7 @@ public class TestLineRecordReader {
         Path testFilePath = new Path(testFile.getAbsolutePath());
         long testFileSize = testFile.length();
         Configuration conf = new Configuration();
-        conf.setInt(org.apache.hadoop.mapreduce.lib.input. LineRecordReader.MAX_LINE_LENGTH, Integer.MAX_VALUE);
+        conf.setInt(org.apache.hadoop.mapreduce.lib.input.LineRecordReader.MAX_LINE_LENGTH, Integer.MAX_VALUE);
 
         TaskAttemptContext context = new TaskAttemptContextImpl(conf, new TaskAttemptID());
 
